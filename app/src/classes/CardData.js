@@ -1,14 +1,12 @@
 const suit = {
-    COPPA = "coppa",
-    BASTONI = "bastoni",
-    SPADE = "spade",
-    DENARI = "denari",
-}
+  COPPA: "coppa",
+  BASTONI: "bastoni",
+  SPADE: "spade",
+  DENARI: "denari",
+};
 
-class CardData {
-    constructor(isPlayed, suit, value) {
-        this.isPlayed = isPlayed,
-        this.suit = suit,
-        this.value = value
-    }
+export class CardData {
+  constructor(suit, value) {
+    (this.isPlayed = false), (this.suit = suit), (this.value = value);
+  }
 }

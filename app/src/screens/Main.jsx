@@ -9,8 +9,7 @@ export default function Main() {
   const [statisticsPressed, setStatisticsPressed] = useState(false);
 
   return playPressed ? (
-    <GameScreen />
-  ) : statisticsPressed ? (
+    <GameScreen />) : statisticsPressed ? (
     <StatisticsScreen />
   ) : (
     <HomeScreen
