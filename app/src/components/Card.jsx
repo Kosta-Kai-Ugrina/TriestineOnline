@@ -1,52 +1,52 @@
 import React from "react";
-import {useState } from "react";
-import { Text, View, StyleSheet, Button, TouchableHighlight } from 'react-native';
+import { useState } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  TouchableHighlight,
+} from "react-native";
 
-export default function Card({ data: { suit, value } }) {
-  console.log("suit = ", suit, " value = ", value);
-  const [count, setCount] = useState(0);
-  const onPress = () => setCount(count + 1);
+export default function Card({
+  data,
+  onPress,
+  isDisabled,
+  style: { container, content, text } = {},
+}) {
   return (
-    <View style={styles.container}>
-      <TouchableHighlight onPress={onPress}>
-        <View style={styles.button}>
-          <Text>{suit} {value}</Text>
+    <View style={[defaultStyles.container, container]}>
+      <TouchableHighlight onPress={() => onPress(data)} disabled={isDisabled}>
+        <View style={[defaultStyles.content, content]}>
+          <Text style={[defaultStyles.text, text]}>
+            {data.suit}
+            {data.value}
+          </Text>
         </View>
       </TouchableHighlight>
-      <View style={styles.countContainer}>
-        <Text style={styles.countText}>
-          {count ? count : null}
-        </Text>
-      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   container: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 50,
     borderRadius: 10,
     backgroundColor: "black",
     alignItems: "center",
     justifyContent: "center",
   },
-  card: {
-    height: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    textAlignVertical: "bottom",
-  },
-  button: {
+  content: {
     alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "white",
-    padding: 8
-
+    width: 50,
+    height: 40,
+    borderRadius: 5,
   },
-  countContainer: {
-    alignItems: "center",
+  text: {
+    fontWeight: "bold",
+    fontSize: 20,
   },
-  countText: {
-    color: "white"
-  }
 });
