@@ -65,3 +65,50 @@ export const dealNewCards = () => {
     };
   });
 };
+
+function getCalcValue(value) {
+  return value <= 3 ? value : value - 13;
+}
+
+export const getWinnerIndex = (playedCards) => {
+  const ledSuit = playedCards[0].suit;
+  let highestValue = getCalcValue(playedCards[0].value);
+  let winnerIndex = 0;
+  for (let i = 1; i < 4; i++) {
+    if (
+      playedCards[i].suit == ledSuit &&
+      getCalcValue(playedCards[i].value) > highestValue
+    ) {
+      highestValue = getCalcValue(playedCards[i].value);
+      winnerIndex = i;
+    }
+  }
+  return winnerIndex;
+};
+
+export const calculatePoints = (playedCards) => {
+  let points = 0;
+  for (let i = 0; i < 4; i++) {
+    const value = playedCards[i].value;
+    if (value == 1) points += 3;
+    else if (value <= 3) points += 1;
+    else if (value >= 11) points += 1;
+  }
+  return (points * 1.0) / 3;
+};
+
+export const chooseCard = (playerHand, playedCards) => {
+  const ledSuit = playedCards[0].suit;
+  if (playerHand.filter((card) => card.suit == ledSuit).length > 0) {
+    const strongestCard = playerHand
+      .filter((card) => card.suit == ledSuit)
+      .sort((a, b) => getCalcValue(a.value) > getCalcValue(b.value))
+      .pop();
+    return strongestCard;
+  } else {
+    playerHand = playerHand.sort(
+      (a, b) => getCalcValue(a.value) < getCalcValue(b.value)
+    );
+    return playerHand.pop();
+  }
+};

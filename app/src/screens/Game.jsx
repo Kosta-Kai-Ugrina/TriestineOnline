@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { CardData } from "../classes/CardData";
 import Hand from "../components/Hand";
-import { dealNewCards } from "../utils/GameLoop";
-
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
+import {
+  dealNewCards,
+  getWinnerIndex,
+  calculatePoints,
+  chooseCard,
+} from "../utils/GameLoop";
 
 export default function GameScreen() {
   const [players, setPlayers] = useState(dealNewCards());
@@ -32,7 +29,11 @@ export default function GameScreen() {
   useEffect(() => {
     if (turnCounter != 0) {
       let temp = players;
-      const playedCard = temp[turnCounter].cards.pop();
+      // const playedCard = temp[turnCounter].cards.pop();
+      const playedCard = chooseCard(temp[turnCounter].cards, playedCards);
+      temp[turnCounter].cards = temp[turnCounter].cards.filter(
+        (card) => playedCard.getId() != card.getId()
+      );
       setPlayers(temp);
       setTurnCounter(turnCounter == 3 ? 0 : turnCounter + 1);
       temp = playedCards;
@@ -46,7 +47,14 @@ export default function GameScreen() {
         "CARDS PLAYED: ",
         ...playedCards.map((card) => card.serialize())
       );
-      // calculate score
+      const winnerIndex = getWinnerIndex(playedCards);
+      console.log("INDEX OF WINNER IS: ", winnerIndex);
+      console.log(
+        "WINNING TEAM IS: ",
+        winnerIndex % 2 == 0 ? "PLAYER'S TEAM" : "OTHER TEAM"
+      );
+      const points = calculatePoints(playedCards);
+      console.log("POINTS SCORED: ", points);
       setPlayedCards(new Array());
     }
   }, [turnCounter]);
