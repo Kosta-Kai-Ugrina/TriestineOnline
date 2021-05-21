@@ -25,7 +25,7 @@ export default function GameScreen() {
   //   }
   // }, [players]);
 
-  // WHEN A CARD IS PLAYED (PUSHED INTO playedCards ARR), REACT ACCORDINGLYs
+  // WHEN A CARD IS PLAYED, REACT ACCORDINGLY
   useEffect(() => {
     if (turnCounter != 0) {
       let temp = players;
@@ -147,68 +147,3 @@ const playedCardStyle = StyleSheet.create({
   content: { width: 50, height: 50, backgroundColor: "red" },
   text: { fontSize: 25, fontWeight: "bold", color: "white" },
 });
-
-// OLD
-
-{
-  /* 
-        <View
-          key="playedCards"
-          style={[styles.playerHandContainer, { marginBottom: 200 }]}
-        >
-          {playedCards.map((cardData, index) => (
-            <Card
-              key={`playedCard${index + 1}`}
-              data={cardData}
-              style={playedCardStyle}
-              isDisabled={true}
-            />
-          ))}
-        </View>
-         */
-}
-{
-  /* {players
-        .filter((hand, index) => index > 0)
-        .map((hand, indexHand) => (
-          <View
-            key={`ai${indexHand + 1}`}
-            style={[styles.playerHandContainer, styles.aiHand]}
-          >
-            {hand.cards.map((cardData, index) => (
-              <Card
-                key={`ai${indexHand + 1}${index + 1}`}
-                data={cardData}
-                isDisabled={true}
-                style={aiCardStyle}
-              />
-            ))}
-          </View>
-        ))} */
-}
-{
-  /* 
-      <View key="playerHand" style={styles.playerHandContainer}>
-        {players[0].cards.map((cardData, index) => (
-          <Card
-            key={`p1${index + 1}`}
-            data={cardData}
-            onPress={() => {
-              console.log(`Card ${cardData.suit[0]}${cardData.value} pressed`);
-              pushToArray(playedCards, setPlayedCards, cardData);
-              let temp = players;
-              temp[0].cards = temp[0].cards.filter(
-                (card) => card.getId() != cardData.getId()
-              );
-              setPlayers(temp);
-              setIsPlayerTurn(false);
-              setTurnCounter(1);
-            }}
-            isDisabled={!isPlayerTurn}
-            style={{
-              container: { margin: 5 },
-            }}
-          />
-        ))}
-      </View> */
-}
