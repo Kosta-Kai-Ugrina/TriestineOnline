@@ -151,13 +151,13 @@ const playerCardStyle = StyleSheet.create({
 });
 
 const aiCardStyle = StyleSheet.create({
-  container: { width: 25, height: 25, margin: 2 },
+  container: { width: 60, height: 120, margin: 2 },
   content: { width: 20, height: 20, backgroundColor: "gray" },
   text: { fontSize: 8, fontWeight: "bold", color: "white" },
 });
 
 const playedCardStyle = StyleSheet.create({
-  container: { width: 60, height: 60, margin: 2 },
+  container: { width: 60, height: 120, margin: 2 },
   content: { width: 50, height: 50, backgroundColor: "red" },
   text: { fontSize: 25, fontWeight: "bold", color: "white" },
 });
