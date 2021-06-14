@@ -1,110 +1,123 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import "../classes/UserAgent";
 import { CardData } from "../classes/CardData";
 import Hand from "../components/Hand";
-import {
-  dealNewCards,
-  getWinnerIndex,
-  calculatePoints,
-  chooseCard,
-} from "../utils/GameLoop";
+
+const SERVER_ADDRESS = "https://still-castle-68445.herokuapp.com";
+const io = require("socket.io-client");
 
 export default function GameScreen() {
-  const [players, setPlayers] = useState(dealNewCards());
-  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-  const [turnCounter, setTurnCounter] = useState(0);
-  const [playedCards, setPlayedCards] = useState(new Array());
-  const [firstPlayer, setFirstPlayer] = useState(0);
-  const [currPoints, setCurrPoints] = useState([0, 0]);
+  const [hand, setHand] = useState(null);
+  const [playedCards, setPlayedCards] = useState([]);
+  const [isPlayerTurn, setIsPlayerTurn] = useState(false);
+  const [score, setScore] = useState([0, 0]);
+  const [socket, setSocket] = useState(null);
+  const [roomID, setRoomID] = useState(null);
+  const [changeyBoi, setChangeyBoi] = useState(true);
 
-  // AFTER THE ROUND ENDS, RESET THE HANDS
-  // useEffect(() => {
-  //   if (players.filter((player) => player.cards.length != 0).length == 0) {
-  //     setFirstPlayer(firstPlayer == 3 ? 0 : firstPlayer + 1);
-  //     setPlayers(dealNewCards());
-  //   }
-  // }, [players]);
-
-  // WHEN A CARD IS PLAYED, REACT ACCORDINGLY
+  const refresh = () => setChangeyBoi(!changeyBoi);
+  // INIT SOCKET
   useEffect(() => {
-    if (turnCounter != 0) {
-      let temp = players;
-      // const playedCard = temp[turnCounter].cards.pop();
-      const playedCard = chooseCard(temp[turnCounter].cards, playedCards);
-      temp[turnCounter].cards = temp[turnCounter].cards.filter(
-        (card) => playedCard.getId() != card.getId()
-      );
-      setPlayers(temp);
-      setTurnCounter(turnCounter == 3 ? 0 : turnCounter + 1);
-      temp = playedCards;
-      temp.push(playedCard);
-      setPlayedCards(temp);
-    } else {
-      setIsPlayerTurn(true);
-    }
-    if (playedCards.length == 4) {
-      console.log(
-        "CARDS PLAYED: ",
-        ...playedCards.map((card) => card.serialize())
-      );
-      const winnerIndex = getWinnerIndex(playedCards);
-      console.log("INDEX OF WINNER IS: ", winnerIndex);
-      console.log(
-        "WINNING TEAM IS: ",
-        winnerIndex % 2 == 0 ? "PLAYER'S TEAM" : "OTHER TEAM"
-      );
-      const points = calculatePoints(playedCards);
-      console.log("POINTS SCORED: ", points);
-      setPlayedCards(new Array());
-    }
-  }, [turnCounter]);
+    let socket = io(SERVER_ADDRESS, {
+      reconnectionDelayMax: 10000,
+      jsonp: false,
+    });
+
+    socket.on("connect", () => console.log("connected"));
+    socket.on("log", (msg) => console.log(msg));
+    socket.on("id room", (id) => {
+      console.log(`got room id: ${id}`);
+      setRoomID(roomID);
+    });
+    socket.on("game start", () => console.log("game started"));
+    socket.on("your turn", () => setIsPlayerTurn(true));
+    socket.on("deal cards", (hand) => {
+      console.log("deal cards");
+      setHand([...hand.map((card) => CardData.deserialize(card))]);
+      refresh();
+    });
+    socket.on("turn over", () => {
+      console.log("turn over");
+      setPlayedCards([]);
+      refresh();
+    });
+    socket.on("round over", ([scoreTeam1, scoreTeam2]) => {
+      console.log(`SCORE\nTEAM 1: ${scoreTeam1}\tTEAM 2: ${scoreTeam2}`);
+      setScore([scoreTeam1, scoreTeam2]);
+      refresh();
+    });
+    socket.on("game over", (isWon) =>
+      console.log("You have ", isWon ? "won! :)" : "lost. ;(")
+    );
+    socket.on("card played", (cardData) =>
+      setPlayedCards([...playedCards, CardData.deserialize(cardData)])
+    );
+
+    setSocket(socket);
+  }, []);
 
   const playCard = (cardData) => {
-    let temp = players;
-    temp[0].cards = temp[0].cards.filter(
-      (card) => card.getId() != cardData.getId()
-    );
-    setPlayers(temp);
-
-    temp = playedCards;
-    temp.push(cardData);
-    setPlayedCards(temp);
-
     setIsPlayerTurn(false);
-    setTurnCounter(1);
+    setHand([...hand.filter((card) => card.getId() != cardData.getId())]);
+    setPlayedCards([...playedCards, cardData]);
+    socket.emit("card played", cardData.serialize());
   };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      {/* 
-          PLAYED CARDS
-      */}
+      <View
+        key="player turn"
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          backgroundColor: isPlayerTurn ? "green" : "red",
+          borderWidth: 3,
+          borderColor: "black",
+          position: "absolute",
+          top: 30,
+          left: 30,
+        }}
+      ></View>
+      <View
+        key="scoreboard"
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          position: "absolute",
+          top: 30,
+          right: 30,
+        }}
+      >
+        <Text
+          key="score team 1"
+          style={{ marginHorizontal: 5, fontSize: 30, fontWeight: "bold" }}
+        >
+          {score[0]}
+        </Text>
+        <Text
+          key="score team 2"
+          style={{ marginHorizontal: 5, fontSize: 30, fontWeight: "bold" }}
+        >
+          {score[1]}
+        </Text>
+      </View>
       <Hand
-        key="playedCards"
+        key="played cards"
         cards={playedCards}
         cardStyle={playedCardStyle}
         handStyle={[styles.playerHandContainer, { marginBottom: 200 }]}
         cardsDisabled={true}
       />
-      {/* 
-          PLAYER AND AI HANDS, 
-          THE TERNARIES CHECK WHETHER IT IS THE PLAYER
-          (WHO IS ON INDEX 0) OR AN AI (INDICES 1, 2 AND 3) 
-      */}
-      {players.map(({ cards }, index) => (
-        <Hand
-          key={`player${index + 1}`}
-          cards={cards}
-          cardStyle={index == 0 ? playerCardStyle : aiCardStyle}
-          cardsDisabled={index != 0 || !isPlayerTurn}
-          handStyle={
-            index == 0
-              ? styles.playerHandContainer
-              : [styles.playerHandContainer, styles.aiHand]
-          }
-          onCardPress={index == 0 ? playCard : () => {}}
-        />
-      ))}
+      <Hand
+        key="hand"
+        cards={hand}
+        cardStyle={playerCardStyle}
+        cardsDisabled={!isPlayerTurn}
+        handStyle={styles.playerHandContainer}
+        onCardPress={playCard}
+      />
     </SafeAreaView>
   );
 }
@@ -112,6 +125,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+    backgroundColor: "#aaffaa",
     alignSelf: "stretch",
     justifyContent: "flex-end",
     alignItems: "center",
@@ -147,3 +161,45 @@ const playedCardStyle = StyleSheet.create({
   content: { width: 50, height: 50, backgroundColor: "red" },
   text: { fontSize: 25, fontWeight: "bold", color: "white" },
 });
+
+// AFTER THE ROUND ENDS, RESET THE HANDS
+// useEffect(() => {
+//   if (players.filter((player) => player.cards.length != 0).length == 0) {
+//     setFirstPlayer(firstPlayer == 3 ? 0 : firstPlayer + 1);
+//     setPlayers(dealNewCards());
+//   }
+// }, [players]);
+
+// WHEN A CARD IS PLAYED, REACT ACCORDINGLY
+// useEffect(() => {
+//   if (turnCounter != 0) {
+//     let temp = players;
+//     // const playedCard = temp[turnCounter].cards.pop();
+//     const playedCard = chooseCard(temp[turnCounter].cards, playedCards);
+//     temp[turnCounter].cards = temp[turnCounter].cards.filter(
+//       (card) => playedCard.getId() != card.getId()
+//     );
+//     setPlayers(temp);
+//     setTurnCounter(turnCounter == 3 ? 0 : turnCounter + 1);
+//     temp = playedCards;
+//     temp.push(playedCard);
+//     setPlayedCards(temp);
+//   } else {
+//     setIsPlayerTurn(true);
+//   }
+//   if (playedCards.length == 4) {
+//     console.log(
+//       "CARDS PLAYED: ",
+//       ...playedCards.map((card) => card.serialize())
+//     );
+//     const winnerIndex = getWinnerIndex(playedCards);
+//     console.log("INDEX OF WINNER IS: ", winnerIndex);
+//     console.log(
+//       "WINNING TEAM IS: ",
+//       winnerIndex % 2 == 0 ? "PLAYER'S TEAM" : "OTHER TEAM"
+//     );
+//     const points = calculatePoints(playedCards);
+//     console.log("POINTS SCORED: ", points);
+//     setPlayedCards(new Array());
+//   }
+// }, [turnCounter]);

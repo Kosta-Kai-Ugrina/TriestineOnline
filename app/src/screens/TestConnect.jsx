@@ -40,32 +40,6 @@ export default function TestConnect() {
           <Text>{msg}</Text>
         </View>
       ))}
-      {/* <View
-        style={{
-          flex: 1,
-          alignItems: "stretch",
-          justifyContent: "flex-start",
-        }}
-      >
-        <FlatList
-          data={messages}
-          keyExtractor={(item) => item}
-          renderItem={(msg) => {
-            console.log("rendering item: ", msg);
-            return (
-              <View
-                style={{
-                  height: 50,
-                  width: 200,
-                  backgroundColor: "blue",
-                }}
-              >
-                <Text>{msg.toString()}</Text>
-              </View>
-            );
-          }}
-        />
-      </View> */}
       <View>
         <TextInput
           style={{

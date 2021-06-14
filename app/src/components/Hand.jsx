@@ -12,9 +12,9 @@ export default function Hand({
 }) {
   return (
     <View style={handStyle}>
-      {cards.map((cardData, index) => (
+      {cards?.map((cardData, index) => (
         <Card
-          key={cardData.getId()}
+          key={cardData.getId() + index.toString()}
           data={cardData}
           onPress={onCardPress}
           isDisabled={cardsDisabled}
