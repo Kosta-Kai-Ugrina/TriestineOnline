@@ -50,8 +50,8 @@ export default function GameScreen() {
     socket.on("game over", (isWon) =>
       console.log("You have ", isWon ? "won! :)" : "lost. ;(")
     );
-    socket.on("card played", (cardData) =>
-      setPlayedCards([...playedCards, CardData.deserialize(cardData)])
+    socket.on("card played", (cards) =>
+      setPlayedCards(cards.map((card) => CardData.deserialize(card)))
     );
 
     setSocket(socket);
@@ -60,7 +60,6 @@ export default function GameScreen() {
   const playCard = (cardData) => {
     setIsPlayerTurn(false);
     setHand([...hand.filter((card) => card.getId() != cardData.getId())]);
-    setPlayedCards([...playedCards, cardData]);
     socket.emit("card played", cardData.serialize());
   };
 
