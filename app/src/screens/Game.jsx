@@ -7,7 +7,7 @@ import Hand from "../components/Hand";
 const SERVER_ADDRESS = "https://still-castle-68445.herokuapp.com";
 const io = require("socket.io-client");
 
-export default function GameScreen() {
+export default function GameScreen({ onGameEnd }) {
   const [hand, setHand] = useState(null);
   const [playedCards, setPlayedCards] = useState([]);
   const [isPlayerTurn, setIsPlayerTurn] = useState(false);
@@ -25,6 +25,7 @@ export default function GameScreen() {
     });
 
     socket.on("connect", () => console.log("connected"));
+    socket.on("disconnect", () => onGameEnd());
     socket.on("log", (msg) => console.log(msg));
     socket.on("id room", (id) => {
       console.log(`got room id: ${id}`);
@@ -124,7 +125,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: "#aaffaa",
+    backgroundColor: "#5f0201f",
     alignSelf: "stretch",
     justifyContent: "flex-end",
     alignItems: "center",

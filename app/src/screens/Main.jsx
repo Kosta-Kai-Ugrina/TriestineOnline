@@ -9,7 +9,8 @@ export default function Main() {
   const [statisticsPressed, setStatisticsPressed] = useState(false);
 
   return playPressed ? (
-    <GameScreen />) : statisticsPressed ? (
+    <GameScreen onGameEnd={() => setPlayPressed(false)} />
+  ) : statisticsPressed ? (
     <StatisticsScreen />
   ) : (
     <HomeScreen
