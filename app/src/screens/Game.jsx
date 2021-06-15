@@ -125,7 +125,7 @@ export default function GameScreen({ onGameEnd }) {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: "#5f0201f",
+    backgroundColor: "#800000",
     alignSelf: "stretch",
     justifyContent: "flex-end",
     alignItems: "center",
