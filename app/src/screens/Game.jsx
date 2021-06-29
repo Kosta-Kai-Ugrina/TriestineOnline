@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import "../classes/UserAgent";
 import { CardData } from "../classes/CardData";
 import Hand from "../components/Hand";
+import { Audio } from 'expo-av';
 
 const SERVER_ADDRESS = "https://still-castle-68445.herokuapp.com";
 const io = require("socket.io-client");
@@ -15,6 +16,7 @@ export default function GameScreen({ onGameEnd }) {
   const [socket, setSocket] = useState(null);
   const [roomID, setRoomID] = useState(null);
   const [changeyBoi, setChangeyBoi] = useState(true);
+  const [sound, setSound] = React.useState();
 
   const refresh = () => setChangeyBoi(!changeyBoi);
   // INIT SOCKET
@@ -58,7 +60,14 @@ export default function GameScreen({ onGameEnd }) {
     setSocket(socket);
   }, []);
 
-  const playCard = (cardData) => {
+  async function playCard (cardData) {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+       require('../../assets/play_card.mp3')
+    );
+    setSound(sound);
+    console.log('Playing Sound');
+    await sound.playAsync();
     setIsPlayerTurn(false);
     setHand([...hand.filter((card) => card.getId() != cardData.getId())]);
     socket.emit("card played", cardData.serialize());
