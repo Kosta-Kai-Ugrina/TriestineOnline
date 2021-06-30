@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import ViewPager from '@react-native-community/viewpager';
 import { useNavigation } from '@react-navigation/native';
-
 import Page from '../components/Page';
 import Footer from '../components/Footer';
 
