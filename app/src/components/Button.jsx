@@ -11,11 +11,13 @@ export default function Button({ text, style, onPress }) {
 
 const styles = StyleSheet.create({
   defaultContainer: {
-    backgroundColor: "red",
+    backgroundColor: "#B22222",
     height: 100,
     width: 200,
     alignItems: "center",
     justifyContent: "center",
+    padding: 20,
+    borderRadius: 5,
   },
   defaultText: {
     color: "white",
