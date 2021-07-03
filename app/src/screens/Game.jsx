@@ -61,6 +61,22 @@ export default function GameScreen({ onGameEnd }) {
     socket.on("card played", (cards) =>
       setPlayedCards(cards.map((card) => CardData.deserialize(card)))
     );
+    socket.on("knock", async () => {
+      console.log("KNOCK");
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../assets/play_card.mp3")
+      );
+      setSound(sound);
+      await sound.playAsync();
+    });
+    socket.on("swipe", async () => {
+      console.log("SWIPE");
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../assets/play_card.mp3")
+      );
+      setSound(sound);
+      await sound.playAsync();
+    });
 
     setSocket(socket);
   }, []);
@@ -141,13 +157,6 @@ export default function GameScreen({ onGameEnd }) {
           onClick={async () => {
             setButtonsEnabled(false);
             socket.emit("knock");
-            console.log("Loading Sound");
-            const { sound } = await Audio.Sound.createAsync(
-              require("../../assets/play_card.mp3")
-            );
-            setSound(sound);
-            console.log("Playing Sound");
-            await sound.playAsync();
           }}
         />
       </View>
@@ -159,13 +168,6 @@ export default function GameScreen({ onGameEnd }) {
           onClick={async () => {
             setButtonsEnabled(false);
             socket.emit("swipe");
-            console.log("Loading Sound");
-            const { sound } = await Audio.Sound.createAsync(
-              require("../../assets/play_card.mp3")
-            );
-            setSound(sound);
-            console.log("Playing Sound");
-            await sound.playAsync();
           }}
         />
       </View>
