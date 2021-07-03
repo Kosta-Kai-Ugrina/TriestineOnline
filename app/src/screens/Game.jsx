@@ -5,6 +5,7 @@ import { CardData } from "../classes/CardData";
 import ImageButton from "../components/ImageButton";
 import Hand from "../components/Hand";
 import { Audio } from "expo-av";
+import { incrementGamesPlayed, incrementGamesWon } from "../classes/Storage";
 
 const SERVER_ADDRESS = "https://still-castle-68445.herokuapp.com";
 const io = require("socket.io-client");
@@ -55,16 +56,18 @@ export default function GameScreen({ onGameEnd }) {
       setScore([scoreTeam1, scoreTeam2]);
       refresh();
     });
-    socket.on("game over", (isWon) =>
-      console.log("You have ", isWon ? "won! :)" : "lost. ;(")
-    );
+    socket.on("game over", (isWon) => {
+      console.log("You have ", isWon ? "won! :)" : "lost. ;(");
+      incrementGamesPlayed();
+      if (isWon) incrementGamesWon();
+    });
     socket.on("card played", (cards) =>
       setPlayedCards(cards.map((card) => CardData.deserialize(card)))
     );
     socket.on("knock", async () => {
       console.log("KNOCK");
       const { sound } = await Audio.Sound.createAsync(
-        require("../../assets/play_card.mp3")
+        require("../../assets/knockSound.wav")
       );
       setSound(sound);
       await sound.playAsync();
@@ -72,7 +75,7 @@ export default function GameScreen({ onGameEnd }) {
     socket.on("swipe", async () => {
       console.log("SWIPE");
       const { sound } = await Audio.Sound.createAsync(
-        require("../../assets/play_card.mp3")
+        require("../../assets/swipeSound.wav")
       );
       setSound(sound);
       await sound.playAsync();
@@ -152,7 +155,7 @@ export default function GameScreen({ onGameEnd }) {
       <View style={{ position: "absolute", bottom: 25, left: 25 }}>
         <ImageButton
           size={50}
-          imgSrc={require("../../assets/fist.png")}
+          imgSrc={require("../../assets/knockImg.png")}
           isEnabled={buttonsEnabled}
           onClick={async () => {
             setButtonsEnabled(false);
@@ -163,7 +166,7 @@ export default function GameScreen({ onGameEnd }) {
       <View style={{ position: "absolute", bottom: 25, right: 25 }}>
         <ImageButton
           size={50}
-          imgSrc={require("../../assets/mop.png")}
+          imgSrc={require("../../assets/swipeImg.png")}
           isEnabled={buttonsEnabled}
           onClick={async () => {
             setButtonsEnabled(false);

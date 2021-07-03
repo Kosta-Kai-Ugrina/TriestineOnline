@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { initStorage } from "../classes/Storage";
 import Button from "../components/Button";
 
 export default function HomeScreen({ onPlayPressed, onStatisticsPressed }) {
+  useEffect(initStorage, []);
+
   return (
     <View style={styles.mainContainer}>
       <Button text="Play" onPress={onPlayPressed} />
