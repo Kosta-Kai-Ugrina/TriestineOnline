@@ -30,7 +30,7 @@ export default function GameScreen({ onGameEnd }) {
     });
 
     socket.on("connect", () => console.log("connected"));
-    socket.on("disconnect", () => onGameEnd());
+    socket.on("disconnect", () => onGameEnd(null));
     socket.on("log", (msg) => console.log(msg));
     socket.on("id room", (id) => {
       console.log(`got room id: ${id}`);
@@ -60,6 +60,7 @@ export default function GameScreen({ onGameEnd }) {
       console.log("You have ", isWon ? "won! :)" : "lost. ;(");
       incrementGamesPlayed();
       if (isWon) incrementGamesWon();
+      onGameEnd(isWon);
     });
     socket.on("card played", (cards) =>
       setPlayedCards(cards.map((card) => CardData.deserialize(card)))

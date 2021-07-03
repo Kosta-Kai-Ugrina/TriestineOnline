@@ -1751,7 +1751,7 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.10.tgz"
   "version" "0.1.10"
 
-"@react-native-community/viewpager@3.3.0":
+"@react-native-community/viewpager@^3.3.0":
   "integrity" "sha512-tyzh79l4t/hxiyS9QD3LRmWMs8KVkZzjrkQ8U8+8To1wmvVCBtp8BenvNsDLTBO7CpO/YmiThpmIdEZMr1WuVw=="
   "resolved" "https://registry.npmjs.org/@react-native-community/viewpager/-/viewpager-3.3.0.tgz"
   "version" "3.3.0"
@@ -5914,7 +5914,7 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
-"react-native-gesture-handler@>= 1.0.0", "react-native-gesture-handler@~1.6.0":
+"react-native-gesture-handler@^1.6.1", "react-native-gesture-handler@>= 1.0.0":
   "integrity" "sha512-gQgIKhDiYf754yzhhliagLuLupvGb6ZyBdzYzr7aus3Fyi87TLOw63ers+r4kGw0h26oAWTAdHd34JnF4NeL6Q=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-1.6.1.tgz"
   "version" "1.6.1"
