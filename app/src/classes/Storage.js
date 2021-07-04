@@ -13,7 +13,7 @@ export const getGamesPlayed = async () => {
       e
     );
   }
-  return parseInt(gamesPlayed);
+  return gamesPlayed === null ? null : parseInt(gamesPlayed);
 };
 
 export const getGamesWon = async () => {
@@ -23,12 +23,12 @@ export const getGamesWon = async () => {
   } catch (e) {
     console.log("ERROR AsyncStorage - getGamesWon(): failed to get value", e);
   }
-  return parseInt(gamesWon);
+  return gamesWon === null ? null : parseInt(gamesWon);
 };
 
 export const initStorage = async () => {
-  let gamesPlayedValue = getGamesPlayed();
-  let gamesWonValue = getGamesWon();
+  let gamesPlayedValue = await getGamesPlayed();
+  let gamesWonValue = await getGamesWon();
   try {
     if (gamesPlayedValue === null)
       await AsyncStorage.setItem(GAMES_PLAYED, "0");
@@ -46,7 +46,7 @@ export const initStorage = async () => {
 };
 
 export const incrementGamesPlayed = async () => {
-  let gamesPlayed = getGamesPlayed();
+  let gamesPlayed = await getGamesPlayed();
   try {
     await AsyncStorage.setItem(GAMES_PLAYED, (gamesPlayed + 1).toString());
   } catch (e) {
@@ -58,7 +58,7 @@ export const incrementGamesPlayed = async () => {
 };
 
 export const incrementGamesWon = async () => {
-  let gamesWon = getGamesWon();
+  let gamesWon = await getGamesWon();
   try {
     await AsyncStorage.setItem(GAMES_WON, (gamesWon + 1).toString());
   } catch (e) {
