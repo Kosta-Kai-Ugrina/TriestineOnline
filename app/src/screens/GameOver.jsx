@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableHighlight, StyleSheet } from "react-native";
+import { View, Text, TouchableHighlight } from "react-native";
 
 export default function GameOverScreen({ isWon, onHomeClick }) {
   return (
@@ -8,6 +8,7 @@ export default function GameOverScreen({ isWon, onHomeClick }) {
         backgroundColor: isWon ? "green" : "red",
         alignItems: "center",
         justifyContent: "space-around",
+        flex: 1,
       }}
     >
       <Text style={{ color: "white", fontSize: 40, fontWeight: "bold" }}>

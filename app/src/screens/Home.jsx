@@ -4,7 +4,9 @@ import { initStorage } from "../classes/Storage";
 import Button from "../components/Button";
 
 export default function HomeScreen({ onPlayPressed, onStatisticsPressed }) {
-  useEffect(initStorage, []);
+  useEffect(() => {
+    initStorage();
+  }, []);
 
   return (
     <View style={styles.mainContainer}>

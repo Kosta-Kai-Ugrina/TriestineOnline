@@ -1,15 +1,15 @@
-import React, { useRef } from 'react';
-import { View, Text } from 'react-native';
-import ViewPager from '@react-native-community/viewpager';
-import { useNavigation } from '@react-navigation/native';
-import Page from '../components/Page';
-import Footer from '../components/Footer';
+import React, { useRef } from "react";
+import { View, Text } from "react-native";
+import ViewPager from "@react-native-community/viewpager";
+import { useNavigation } from "@react-navigation/native";
+import Page from "../components/Page";
+import Footer from "../components/Footer";
 
 const Onboarding = () => {
   const pagerRef = useRef(null);
   const navigation = useNavigation();
 
-  const handlePageChange = pageNumber => {
+  const handlePageChange = (pageNumber) => {
     pagerRef.current.setPage(pageNumber);
   };
 
@@ -20,7 +20,7 @@ const Onboarding = () => {
           <Page
             backgroundColor="#ffc93c"
             iconName="cards"
-            title="Welcome to Tiestine Online"
+            title="Welcome to Triestine Online"
           />
           <Footer
             backgroundColor="#ffc93c"
@@ -44,7 +44,7 @@ const Onboarding = () => {
             }}
             rightButtonLabel="Continue"
             rightButtonPress={() => {
-              navigation.navigate('Main');
+              navigation.navigate("Main");
             }}
           />
         </View>

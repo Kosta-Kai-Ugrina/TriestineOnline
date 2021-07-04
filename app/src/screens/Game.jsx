@@ -18,10 +18,10 @@ export default function GameScreen({ onGameEnd }) {
   const [socket, setSocket] = useState(null);
   const [roomID, setRoomID] = useState(null);
   const [changeyBoi, setChangeyBoi] = useState(true);
-  const [sound, setSound] = useState(null);
   const [buttonsEnabled, setButtonsEnabled] = useState(false);
 
   const refresh = () => setChangeyBoi(!changeyBoi);
+
   // INIT SOCKET
   useEffect(() => {
     let socket = io(SERVER_ADDRESS, {
@@ -65,23 +65,22 @@ export default function GameScreen({ onGameEnd }) {
     socket.on("card played", (cards) =>
       setPlayedCards(cards.map((card) => CardData.deserialize(card)))
     );
-    socket.on("knock", async () => {
-      console.log("KNOCK");
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../assets/knockSound.wav")
-      );
-      setSound(sound);
-      await sound.playAsync();
+    socket.on("knock", () => {
+      (async () => {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../assets/knockSound.wav")
+        );
+        await sound.playAsync();
+      })();
     });
-    socket.on("swipe", async () => {
-      console.log("SWIPE");
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../assets/swipeSound.wav")
-      );
-      setSound(sound);
-      await sound.playAsync();
+    socket.on("swipe", () => {
+      (async () => {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../assets/swipeSound.wav")
+        );
+        await sound.playAsync();
+      })();
     });
-
     setSocket(socket);
   }, []);
 
@@ -90,7 +89,6 @@ export default function GameScreen({ onGameEnd }) {
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/play_card.mp3")
     );
-    setSound(sound);
     console.log("Playing Sound");
     await sound.playAsync();
     setIsPlayerTurn(false);
@@ -218,45 +216,3 @@ const playedCardStyle = StyleSheet.create({
   content: { width: 50, height: 50, backgroundColor: "red" },
   text: { fontSize: 25, fontWeight: "bold", color: "white" },
 });
-
-// AFTER THE ROUND ENDS, RESET THE HANDS
-// useEffect(() => {
-//   if (players.filter((player) => player.cards.length != 0).length == 0) {
-//     setFirstPlayer(firstPlayer == 3 ? 0 : firstPlayer + 1);
-//     setPlayers(dealNewCards());
-//   }
-// }, [players]);
-
-// WHEN A CARD IS PLAYED, REACT ACCORDINGLY
-// useEffect(() => {
-//   if (turnCounter != 0) {
-//     let temp = players;
-//     // const playedCard = temp[turnCounter].cards.pop();
-//     const playedCard = chooseCard(temp[turnCounter].cards, playedCards);
-//     temp[turnCounter].cards = temp[turnCounter].cards.filter(
-//       (card) => playedCard.getId() != card.getId()
-//     );
-//     setPlayers(temp);
-//     setTurnCounter(turnCounter == 3 ? 0 : turnCounter + 1);
-//     temp = playedCards;
-//     temp.push(playedCard);
-//     setPlayedCards(temp);
-//   } else {
-//     setIsPlayerTurn(true);
-//   }
-//   if (playedCards.length == 4) {
-//     console.log(
-//       "CARDS PLAYED: ",
-//       ...playedCards.map((card) => card.serialize())
-//     );
-//     const winnerIndex = getWinnerIndex(playedCards);
-//     console.log("INDEX OF WINNER IS: ", winnerIndex);
-//     console.log(
-//       "WINNING TEAM IS: ",
-//       winnerIndex % 2 == 0 ? "PLAYER'S TEAM" : "OTHER TEAM"
-//     );
-//     const points = calculatePoints(playedCards);
-//     console.log("POINTS SCORED: ", points);
-//     setPlayedCards(new Array());
-//   }
-// }, [turnCounter]);
