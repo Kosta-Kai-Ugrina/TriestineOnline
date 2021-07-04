@@ -15,13 +15,14 @@ export default function Main() {
     <GameScreen
       onGameEnd={(result) => {
         setPlayPressed(false);
+        setGameOver(true);
         setIsWon(result);
       }}
     />
   ) : !playPressed && gameOver ? (
     <GameOverScreen onHomeClick={() => setGameOver(false)} isWon={isWon} />
   ) : statisticsPressed ? (
-    <StatisticsScreen />
+    <StatisticsScreen onBackBtnClick={() => setStatisticsPressed(false)} />
   ) : (
     <HomeScreen
       onPlayPressed={() => setPlayPressed(true)}
