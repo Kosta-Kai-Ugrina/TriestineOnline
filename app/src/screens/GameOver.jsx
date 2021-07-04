@@ -26,10 +26,12 @@ export default function GameOverScreen({ isWon, onHomeClick }) {
           borderRadius: 30,
           borderWidth: 5,
           borderColor: "black",
+          alignItems: "center",
+          justifyContent: "center",
         }}
         onPressOut={onHomeClick}
       >
-        <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
+        <Text style={{ color: "black", fontSize: 30, fontWeight: "bold" }}>
           HOME
         </Text>
       </TouchableHighlight>
