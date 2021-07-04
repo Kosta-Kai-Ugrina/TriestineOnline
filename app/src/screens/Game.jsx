@@ -85,13 +85,11 @@ export default function GameScreen({ onGameEnd }) {
   }, []);
 
   async function playCard(cardData) {
-    console.log("Loading Sound");
+    setIsPlayerTurn(false);
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/play_card.mp3")
     );
-    console.log("Playing Sound");
     await sound.playAsync();
-    setIsPlayerTurn(false);
     setButtonsEnabled(false);
     setHand([...hand.filter((card) => card.getId() != cardData.getId())]);
     socket.emit("card played", cardData.serialize());
